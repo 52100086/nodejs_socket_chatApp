@@ -65,15 +65,15 @@ io.on('connection', function(socket){
 
     //User Exit Event
     socket.on('exituser', function(username){
+        loggedInUsers = loggedInUsers.filter(user => user !== username);
         socket.broadcast.emit("update", username + " left the conversation");
     })
 
 
     //Get All Users function and emit the userList event
     socket.on('getUsers', async function(){
-        let users = await User.find({});
-        let usernames = users.map(user => user.username);
-        socket.emit("userList", usernames);
+        let otherLoggedInUsers = loggedInUsers.filter(user => user !== socket.username);
+        socket.emit("userList", otherLoggedInUsers);
     });
 
 
